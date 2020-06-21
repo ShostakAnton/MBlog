@@ -18,6 +18,7 @@ class Post(models.Model):
                              on_delete=models.SET_NULL,     # коментарии останутся в БД даже при удалении автора
                              blank=True,
                              null=True)
+    like = models.IntegerField(default=0)
 
     def __str__(self):
         return '{} - {}'.format(self.id ,self.user)
@@ -25,3 +26,4 @@ class Post(models.Model):
     class Meta:
         verbose_name = "Сообщение"
         verbose_name_plural = "Сообщения"
+        ordering = ['id']
