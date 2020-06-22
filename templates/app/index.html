@@ -2,16 +2,16 @@
 
 
 {% block content %}
-    <div class="row form-twit">
-        {% if user.is_active %}
+    {% if user.is_active %}
+        <div class="row form-twit">
             <form action="" method="post">
                 {% csrf_token %}
                 {{ form.as_p }}
                 <button type="submit" class="btn btn-success small">Отправить</button>
             </form>
-        {% endif %}
+        </div>
+    {% endif %}
 
-    </div>
     {% for post in posts %}
         <div class="row">
             <div class="col-12">{{ post.text }}</div>
@@ -39,7 +39,7 @@
                         <input type="number" name="id" hidden value="{{ post.id }}">
                         {# получаем значение id сообщения #}
                         {{ form.as_p }}
-                        <button type="submit"  class="btn btn-success">Коментировать</button>
+                        <button type="submit" class="btn btn-success">Коментировать</button>
                     </form>
                 </div>
             </div>

@@ -1,3 +1,12 @@
+// Установка csrf_token
+(function () {                                      // авто добавление Cookie: csrftoken=gv8B1iQ5GnQ9UIoVaAckkjN4PNSauk0QSokZ13nETZGDkYjAOwFeNZ5is17AQgVY;
+    let csrftoken = Cookies.get('csrftoken');       // получение csrftoken
+    $.ajaxSetup({                                   // любой ajax запрос будет идти с csrftoken
+        headers: {"X-CSRFToken": csrftoken}         // запись csrftoken в headers ajax
+    });
+})();
+
+
 // Показать форму комментария
 let openForm = function (id) {
     $(`#${id}`).show()
@@ -17,7 +26,7 @@ let like = function (id) {
             pk: id,
         },
         success: (response) => {
-            window.location = response
+            window.location = response          // обновление страницы
         },
         error: (response) => {
             console.log("False")

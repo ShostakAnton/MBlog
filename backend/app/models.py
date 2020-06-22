@@ -19,6 +19,8 @@ class Post(models.Model):
                              blank=True,
                              null=True)
     like = models.IntegerField(default=0)
+    user_like = models.ManyToManyField(User, verbose_name="Кто лайкнул", related_name="users_like")
+
 
     def __str__(self):
         return '{} - {}'.format(self.id ,self.user)
