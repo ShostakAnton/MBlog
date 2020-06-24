@@ -33,3 +33,18 @@ let like = function (id) {
         }
     })
 };
+
+
+// обработать форму авторизации с помощью ajax request.
+$(".need_auth").submit(function (e) {
+    e.preventDefault();
+    var url = $(this).attr('action');
+    var data = $(this).serialize();
+    $.post(
+        url,
+        data,
+        function (response) {
+            window.location = response.location;
+        },
+    );
+});

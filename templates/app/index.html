@@ -13,16 +13,24 @@
     {% endif %}
 
     {% for post in posts %}
-        <div class="row">
-            <div class="col-12">{{ post.text }}</div>
-            <div class="col-12"><b>{{ post.date }}</b> - {{ post.user }}</div>
+        <div class="row twit">
+            <div class="col-12"><p>{{ post.text }}</p></div>
+            <div class="col-12"><b><small>{{ post.date }}- {{ post.user }}</small></b></div>
             <div class="col-12">{{ post.like }} -
-                <i class="far fa-thumbs-up" aria-hidden="true" onclick="like({{ post.id }})"></i></div>
+                {% if user.is_authenticated %}
+                    <i class="far fa-thumbs-up" aria-hidden="true"
+                       onclick="like({{ post.id }})"></i></div>
+                {% else %}
+                    <!-- Выпадает порма регистрации -->
+                    <a href="/acount/login" data-toggle="modal" data-target="#loginModal">
+                        <i class="far fa-thumbs-up"
+                           aria-hidden="true"></i>Зарегистрируйтесь, поставь оценку</a>
+                {% endif %}
             <hr>
         </div>
         <div class="row">
-            Коментарии
-            <br>
+            <div class="col-12">Коментарии<br></div>
+
         </div>
         {% if user.is_active %}
             <div class="row">

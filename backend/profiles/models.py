@@ -3,6 +3,10 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from django.utils import timezone
+from PIL import Image
+import os
+
 
 class Profile(models.Model):
     """Модель профиля пользователя"""
@@ -19,11 +23,21 @@ class Profile(models.Model):
         return "{}".format(self.user)
 
     @property
-    def get_avatar_url(self):   # получение изображение
+    def get_avatar_url(self):  # получение изображение
         if self.avatar:
             return '/media/{}'.format(self.avatar)
         else:
             return '/static/img/default.png'
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.avatar:
+            print("avatar detected")
+            img = Image.open(self.avatar.path)
+            if img.height > 150 or img.width > 150:
+                output_size = (150, 150)
+                img.thumbnail(output_size)
+                img.save(self.avatar.path)
 
 
 @receiver(post_save, sender=User)

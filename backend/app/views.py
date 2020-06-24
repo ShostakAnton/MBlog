@@ -10,7 +10,10 @@ class PostView(View):
     """Сообщения пользователя"""
 
     def get(self, request):  # возвращение сообщений от конкретного пользователя
-        posts = Post.objects.filter(twit__isnull=True)
+        if request.user.is_authenticated:
+            posts = Post.objects.filter(twit__isnull=True, user=request.user)
+        else:
+            posts = Post.objects.filter(twit__isnull=True)
         form = PostForm()
         return render(request, 'app/index.html', {'posts': posts, 'form': form})
 
