@@ -48,3 +48,20 @@ $(".need_auth").submit(function (e) {
         },
     );
 });
+
+// Подписаться
+let follow = function (id) {
+    $.ajax({
+        url: "http://127.0.0.1:8000/profile/follow/",
+        type: "POST",
+        data: {
+            pk: id,
+        },
+        success: (response) => {
+            window.location = response
+        },
+        error: (response) => {
+            console.log("False")
+        }
+    })
+};

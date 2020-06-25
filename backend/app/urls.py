@@ -2,9 +2,7 @@ from django.urls import path, include
 from .views import *
 
 urlpatterns = [
-    path('', PostView.as_view(), name='posts'),
+    path('', AllTwit.as_view(), name='home'),
+    path('my/', PostView.as_view(), name='posts'),
     path('like/', Like.as_view()),
 ]
-
-
-

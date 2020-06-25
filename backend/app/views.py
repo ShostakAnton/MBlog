@@ -1,9 +1,25 @@
+from django.core.paginator import Paginator
 from django.shortcuts import render, HttpResponse, redirect
-from django.views.generic import View
+from django.views.generic import View, ListView
 from .models import Post
 from .forms import PostForm
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin  # проверка на вход в акаунт пользователя
+
+
+class AllTwit(ListView):
+    """Выводим все твиты"""
+    model = Post
+    queryset = Post.objects.all()
+    context_object_name = 'posts'
+    template_name = 'app/index.html'
+    # ordering = ['-date']
+    paginate_by = 5
+
+    def get_context_data(self, **kwargs):       # передача формы
+        context = super().get_context_data(**kwargs)
+        context["form"] = PostForm()
+        return context
 
 
 class PostView(View):
@@ -15,7 +31,14 @@ class PostView(View):
         else:
             posts = Post.objects.filter(twit__isnull=True)
         form = PostForm()
-        return render(request, 'app/index.html', {'posts': posts, 'form': form})
+
+        paginator = Paginator(posts, 5)
+        page = request.GET.get("page")  # получаем номер страницы на которой сейчас находимя\ся
+        page_obj = paginator.get_page(page)
+
+        return render(request, 'app/index.html', {'posts': posts,
+                                                  'form': form,
+                                                  "page_obj": page_obj})
 
     def post(self, request):  # отправка сообщений
         form = PostForm(request.POST)
@@ -27,7 +50,7 @@ class PostView(View):
                 # полученый id
             form.user = request.user  # присваеваем к форме юзера
             form.save()
-            return redirect('/')
+            return redirect('posts')
         else:
             return HttpResponse('error')
 
