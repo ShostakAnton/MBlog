@@ -1,4 +1,5 @@
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.shortcuts import render, HttpResponse, redirect
 from django.views.generic import View, ListView
 from .models import Post
@@ -9,14 +10,16 @@ from django.contrib.auth.mixins import LoginRequiredMixin  # проверка н
 
 class AllTwit(ListView):
     """Выводим все твиты"""
-    model = Post
-    queryset = Post.objects.all()
+    # model = Post
+    # queryset = Post.objects.all()
+    queryset = Post.objects.filter(twit__isnull=True)
+
     context_object_name = 'posts'
     template_name = 'app/index.html'
     # ordering = ['-date']
     paginate_by = 5
 
-    def get_context_data(self, **kwargs):       # передача формы
+    def get_context_data(self, **kwargs):  # передача формы
         context = super().get_context_data(**kwargs)
         context["form"] = PostForm()
         return context
@@ -69,3 +72,28 @@ class Like(LoginRequiredMixin, View):
             post.like += 1
         post.save()
         return HttpResponse(status=201)
+
+
+class PostsIfollow(LoginRequiredMixin, AllTwit):
+    model = Post
+    template_name = 'app/index.html'
+    context_object_name = 'posts'
+    paginate_by = 5
+
+    # def get_queryset(self):
+    #     current_user = User.objects.get(id=self.request.user.id)
+    #     people_i_follow = current_user.follow_user.all()
+    #     lst_id = []
+    #     for user in people_i_follow:
+    #         lst_id.append(user.id)
+    #     qs = Post.objects.filter(
+    #         Q(user_id__in=self.request.user.follow_user.all()) |
+    #         Q(user=self.request.user))
+    #     return qs
+
+    def get_queryset(self):
+        qs = Post.objects.filter(
+            Q(user_id__in=self.request.user.profile.get_followers) |
+            Q(user_id=self.request.user.id)
+        )
+        return qs

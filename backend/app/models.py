@@ -8,7 +8,8 @@ class Post(models.Model):
     user = models.ForeignKey(
         User,
         verbose_name="Пользователь",
-        on_delete=models.CASCADE,)
+        on_delete=models.CASCADE,
+        related_name='twits')
 
     text = models.TextField("Сообщение", max_length=500)
     date = models.DateTimeField("Дата", auto_now_add=True)
@@ -17,7 +18,8 @@ class Post(models.Model):
                              verbose_name='Твит',
                              on_delete=models.SET_NULL,     # коментарии останутся в БД даже при удалении автора
                              blank=True,
-                             null=True)
+                             null=True,
+                             related_name='child')
     like = models.IntegerField(default=0)
     user_like = models.ManyToManyField(User, verbose_name="Кто лайкнул", related_name="users_like")
 

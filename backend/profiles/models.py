@@ -30,6 +30,13 @@ class Profile(models.Model):
         else:
             return '/static/img/default.png'
 
+    @property
+    def get_followers(self):
+        if self.follow:
+            return self.follow.all()
+        else:
+            return 'no followers yet'
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         if self.avatar:

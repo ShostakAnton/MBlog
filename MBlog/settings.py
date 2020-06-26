@@ -43,7 +43,10 @@ INSTALLED_APPS = [
     'bootstrap4',
 
     'backend.app',
-    'backend.profiles'
+    'backend.profiles',
+
+    'debug_toolbar',
+    'mptt',
 ]
 
 MIDDLEWARE = [
@@ -54,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'MBlog.urls'
@@ -140,3 +144,5 @@ STATIC_URL = '/static/'  #
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+INTERNAL_IPS = '127.0.0.1'

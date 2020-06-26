@@ -41,12 +41,35 @@ class ProfileEditView(LoginRequiredMixin, UpdateView):  # UpdateView - полз�
         return super().form_valid(form)
 
 
+class PublicUserInfo(LoginRequiredMixin, DetailView):
+    """Публичный профиль пользователя"""
+    model = Profile
+    context_object_name = 'profile'
+    template_name = 'profiles/public_user_info.html'
+
+    def get_object(self, queryset=None):
+        pk = self.kwargs.get('pk')
+        obj = get_object_or_404(Profile, id=pk)
+        return obj
+
+    def get_queryset(self):
+        profile = self.get_object()
+        user = User.objects.get(id=profile.id)
+        qs = user.twits.filter(twit__isnull=True)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['posts'] = self.get_queryset()
+        return context
+
+
 class AddFollow(View):
     """Подпись на пользователя"""
 
     def post(self, request):
-        pk = request.POST.get("pk")     # получаем id профеля на которого подписываемся
-        user = Profile.objects.get(id=pk)       # выбираем этот профиль с бд
-        user.follow.add(User.objects.get(id=request.user.id))       # добавляем в поле follow данного юзера
+        pk = request.POST.get("pk")  # получаем id профеля на которого подписываемся
+        user = Profile.objects.get(id=pk)  # выбираем этот профиль с бд
+        user.follow.add(User.objects.get(id=request.user.id))  # добавляем в поле follow данного юзера
         user.save()
         return HttpResponse(status=201)
