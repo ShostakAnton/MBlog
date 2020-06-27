@@ -41,12 +41,13 @@ INSTALLED_APPS = [
     'allauth.account',
 
     'bootstrap4',
+    'debug_toolbar',
+    'mptt',
+    'rest_framework',
 
     'backend.app',
     'backend.profiles',
 
-    'debug_toolbar',
-    'mptt',
 ]
 
 MIDDLEWARE = [
@@ -146,3 +147,18 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 INTERNAL_IPS = '127.0.0.1'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (             # доступы
+        'rest_framework.permissions.IsAdminUser',
+        'rest_framework.permissions.AllowAny',
+    ),
+    'PAGE_SIZE': 10,
+    'DEFAULT_AUTHENTICATION_CLASSES': (         # авторизация по дефолту
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework_json_api.pagination.PageNumberPagination',
+}
