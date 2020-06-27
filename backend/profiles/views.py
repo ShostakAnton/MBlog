@@ -55,7 +55,7 @@ class PublicUserInfo(LoginRequiredMixin, DetailView):
     def get_queryset(self):
         profile = self.get_object()
         user = User.objects.get(id=profile.id)
-        qs = user.twits.filter(twit__isnull=True)
+        qs = user.twits.all()
         return qs
 
     def get_context_data(self, **kwargs):

@@ -10,9 +10,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin  # проверка н
 
 class AllTwit(ListView):
     """Выводим все твиты"""
-    # model = Post
-    # queryset = Post.objects.all()
-    queryset = Post.objects.filter(twit__isnull=True)
+    model = Post
+    queryset = Post.objects.all()
+    # queryset = Post.objects.filter(parent__isnull=True)
 
     context_object_name = 'posts'
     template_name = 'app/index.html'
@@ -29,13 +29,14 @@ class PostView(View):
     """Сообщения пользователя"""
 
     def get(self, request):  # возвращение сообщений от конкретного пользователя
-        if request.user.is_authenticated:
-            posts = Post.objects.filter(twit__isnull=True, user=request.user)
-        else:
-            posts = Post.objects.filter(twit__isnull=True)
+        # if request.user.is_authenticated:
+        #     posts = Post.objects.filter(parent__isnull=True, user=request.user)
+        # else:
+        #     posts = Post.objects.filter(parent__isnull=True)
+        posts = Post.objects.filter(user=request.user)
         form = PostForm()
 
-        paginator = Paginator(posts, 5)
+        paginator = Paginator(posts, 10)
         page = request.GET.get("page")  # получаем номер страницы на которой сейчас находимя\ся
         page_obj = paginator.get_page(page)
 
@@ -49,7 +50,7 @@ class PostView(View):
             pk = request.POST.get("id", None)  # получаем id с фронт-енда
             form = form.save(commit=False)  # приостановка сохранения формы
             if pk is not None:
-                form.twit = Post.objects.get(id=pk)  # присваеваем твит, сообщению которому соотвествует
+                form.parent = Post.objects.get(id=pk)  # присваеваем твит, сообщению которому соотвествует
                 # полученый id
             form.user = request.user  # присваеваем к форме юзера
             form.save()
@@ -78,7 +79,7 @@ class PostsIfollow(LoginRequiredMixin, AllTwit):
     model = Post
     template_name = 'app/index.html'
     context_object_name = 'posts'
-    paginate_by = 5
+    paginate_by = 10
 
     # def get_queryset(self):
     #     current_user = User.objects.get(id=self.request.user.id)
