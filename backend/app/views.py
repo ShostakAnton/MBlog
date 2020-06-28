@@ -54,7 +54,7 @@ class PostView(View):
                 # полученый id
             form.user = request.user  # присваеваем к форме юзера
             form.save()
-            return redirect('posts')
+            return redirect('home')
         else:
             return HttpResponse('error')
 

@@ -26,3 +26,11 @@ class PostSerializer(serializers.ModelSerializer):
                   "parent",
                   "like",
                   "user_like")
+
+
+class AddTweetSerializer(serializers.ModelSerializer):
+    """Добавление твита"""
+
+    class Meta:
+        model = Post
+        fields = ("text",)
