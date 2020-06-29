@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from backend.app.models import Post
 
 
-class UserSerialiser(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     """Сериализация пользователя"""
 
     class Meta:
@@ -14,8 +14,8 @@ class UserSerialiser(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     """Serializer твитов"""
-    user = UserSerialiser()
-    user_like = UserSerialiser(many=True)
+    user = UserSerializer()
+    user_like = UserSerializer(many=True)
 
     class Meta:
         model = Post
