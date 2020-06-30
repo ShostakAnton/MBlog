@@ -11,17 +11,17 @@
         <div class="collapse navbar-collapse" id="basicExampleNav">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#" @click="goPage('home')">Главная</a>
+                    <a v-if='auth' class="nav-link" href="#" @click="goPage('home')">Главная</a>
                 </li>
             </ul>
             <ul class="navbar-nav mr-0">
                 <!--                {% if user.is_authenticated %}-->
                 <li class="nav-item">
-                    <a class="nav-link" href="#">My Posts + Whom I follow
+                    <a v-if='auth' class="nav-link" href="#">My Posts + Whom I follow
                     </a>
                 </li>
                 <li class="nav-item my-0">
-                    <a class="nav-link" href="#">Мои записи</a>
+                    <a v-if='auth' class="nav-link" href="#" @click="goPage('my_tweets')">Мои записи</a>
                 </li>
                 <li class="nav-item my-0">
                     <a class="nav-link"
@@ -33,11 +33,12 @@
                     <img class="avatar" src="">
                 </li>
                 <li class="nav-item my-0">
-                    <a class="nav-link" href="#">Выход</a>
+                    <a v-if='auth' @click="logout" class="nav-link" href="#">Выход</a>
                 </li>
                 <!--                {% else %}-->
                 <li class="nav-item my-0">
-                    <a @click="goPage('login')"
+                    <a v-if='!auth'
+                       @click="goLogin"
                        class="nav-link"
                        href="#"
                        data-toggle="modal"
@@ -53,13 +54,31 @@
 
 <script>
     export default {
-        name: "Menu",
 
+        name: "Menu",
+        computed: {
+            auth() {
+                if (this.$store.getters.get_auth) return true
+                else return false
+            }
+        },
         methods: {
             goPage(item) {
                 this.$router.push({name: item})
+            },
+            goLogin() {
+                this.$emit("showLogin")
+            },
+            logout() {
+                this.$store.commit("set_auth", false)   // отображение кнопки входа
+                sessionStorage.removeItem("token")      // удаление токена
+                $.ajaxSetup({       // чистка хидера
+                    headers: {'Authorization': ""},
+                });
+                window.location = '/'
             }
-        }
+        },
+
     }
 </script>
 
