@@ -17,17 +17,20 @@
             Login,
         },
         data() {
-            return{
+            return {
                 login: false
             }
         },
         created() {
-             if (sessionStorage.getItem("token")) {         // проверка на существование токена
-                 this.$store.commit("set_auth", true)
-             }
-             else {
-                 this.$store.commit("set_auth", false)
-             }
+            if (sessionStorage.getItem("token")) {         // проверка на существование токена
+                this.$store.commit("set_auth", true)
+                $.ajaxSetup({       // запись токена в хидер
+                    headers: {'Authorization': "Token " + sessionStorage.getItem('token')},
+                });
+                this.$store.dispatch('user_info')
+            } else {
+                this.$store.commit("set_auth", false)
+            }
         },
         methods: {
             setLogin(value) {

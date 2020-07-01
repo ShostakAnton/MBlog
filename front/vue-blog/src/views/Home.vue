@@ -1,6 +1,6 @@
 <template>
     <div class="home">
-        <Tweets :tweet="tweets"></Tweets>
+        <Tweets :tweet="tweets" @reload="loadTweets"></Tweets>
     </div>
 </template>
 

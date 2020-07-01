@@ -7,6 +7,7 @@ export default new Vuex.Store({
     state: {
         url_server: "http://127.0.0.1:8000/",
         auth_user: false,
+        user: '',
     },
     getters: {      // для получения обьектов из state
         get_url_server(state) {
@@ -14,13 +15,37 @@ export default new Vuex.Store({
         },
         get_auth(state) {
             return state.auth_user
-        }
+        },
+        // Получние инфы о юзере
+        get_user_info(state) {
+            return state.user
+        },
     },
     mutations: {
         set_auth(state, value) {
             state.auth_user = value
         },
+        // Записываю инфу о юзере
+        set_user_info(state, value) {
+            state.user = value
+        }
     },
-    actions: {},
+    actions: {
+        user_info(context) {
+            $.ajax({
+                async: false,
+                url: context.getters.get_url_server + "api/v1/profile/",
+                type: "GET",
+                success: (response) => {
+                    context.commit('set_user_info', response)
+                },
+                error: (response) => {
+                    if (response.status === 400) {
+
+                    }
+                }
+            });
+        }
+    },
     modules: {}
 })
