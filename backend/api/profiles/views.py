@@ -27,7 +27,6 @@ class PublicUserInfo(APIView):
 
     def get(self, request):
         obj = Post.objects.filter(user__profile__id=request.GET.get('pk'))  # все посты пользователя
-        print(obj)
         ser = PostSerializer(obj, many=True)
         return Response(ser.data)
 

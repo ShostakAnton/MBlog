@@ -1,5 +1,5 @@
 <template>
-    <div class="home">
+    <div class="MyTweets">
         <Tweets :tweet="tweets" @reload="loadTweets"></Tweets>
     </div>
 </template>
@@ -8,29 +8,33 @@
     import Tweets from "../components/Tweets";
 
     export default {
-        name: 'Home',
+        name: "MyTweets",
         components: {
             Tweets
         },
         data() {
             return {
                 tweets: "",
-                url: 'api/v1/app/',
+                url: 'api/v1/app/my/',
             }
         },
         created() {
             this.loadTweets()
         },
         methods: {
-            loadTweets() {          // запрос на получение всех твитов
+            loadTweets() {
                 $.ajax({
                     url: this.$store.getters.get_url_server + this.url,
                     type: "GET",
                     success: (response) => {
-                        this.tweets = response      // сохранение полученых твитов в атрибут tweets
+                        this.tweets = response
                     }
                 })
             }
-        }
+        },
     }
 </script>
+
+<style scoped>
+
+</style>
