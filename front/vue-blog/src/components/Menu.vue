@@ -29,10 +29,9 @@
                         <span>{{ $store.getters.get_user_info.user.username }}</span>
                     </a>
                 </li>
-                <li class="nav-item my-0">
+                <li v-if="auth" class="nav-item my-0">
                     <img class="avatar"
                          :src="$store.getters.get_url_media + $store.getters.get_user_info.avatar">
-
                 </li>
                 <li class="nav-item my-0">
                     <a v-if='auth' @click="logout" class="nav-link" href="#">Выход</a>

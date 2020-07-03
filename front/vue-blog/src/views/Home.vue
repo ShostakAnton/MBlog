@@ -10,12 +10,24 @@
     export default {
         name: 'Home',
         components: {
-            Tweets
+            Tweets,
         },
         data() {
             return {
                 tweets: "",
                 url: 'api/v1/app/',
+            }
+        },
+        watch: {
+            '$route.name'() {
+                if (this.$route.name === 'home') {
+                    this.url = 'api/v1/app/'
+                } else if (this.$route.name === 'my_tweets') {
+                    this.url = 'api/v1/app/my/'
+                } else if (this.$route.name === 'my_follow_tweets') {
+                    this.url = 'api/v1/app/favorites/'
+                }
+                this.loadTweets()
             }
         },
         created() {

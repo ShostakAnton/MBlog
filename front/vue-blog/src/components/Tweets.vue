@@ -28,38 +28,38 @@
                 </button>
             </div>
             <hr>
+
+
             <div class="col-12 twit">
                 Комментарии
-                <!--&lt;!&ndash;                {{ node.get_descendant_count }}        &lt;!&ndash;get_descendant_count - количество всех-->
-                <!--дочерних елементов    &ndash;&gt;-->
-                <!--                <i class="fa fa-arrow-down" aria-hidden="true"-->
-                <!--                   onclick="openForm({{ node.id }})"></i>-->
+                <!--                {{ node.get_descendant_count }}        {# get_descendant_count - количество всех дочерних елементов   #}-->
+                <i class="fa fa-arrow-down"
+                   @click="openForm(node.id)">
+                </i>
+                <i class="fa fa-arrow-up"
+                   @click="closeForm(node.id)">
+                </i>
 
-                <!--                <i class="fa fa-arrow-up"-->
-                <!--                   onclick="closeForm({{ node.id }})">-->
-                <!--                </i>-->
-
-                <!--                <div class="row">-->
-                <!--                    <div class="col-12 comment" id="{{ node.id }}">-->
-                <!--                        {# Комемнтарии комментариев #}-->
-                <!--                        <div class="col-12">-->
-                <!--                            {% if not node.is_leaf_node %} {# проверка на дочерние елементы #}-->
-                <!--                            <ul class="children">-->
-                <!--                                {{ children }}-->
-                <!--                            </ul>-->
-                <!--&lt;!&ndash;                            {% endif %}&ndash;&gt;-->
-                <!--                        </div>-->
-                <!--                        {% if user.is_active and node.level < 4 %} {# node.level - уровень вложености #}-->
-                <!--                        <form action="{% url 'posts' %}" method="post">-->
-                <!--                            {% csrf_token %}-->
-                <!--                            <input type="number" name="id" hidden value="{{ node.id }}">-->
-                <!--                            {# получаем значение id сообщения #}-->
-                <!--                            {{ form.as_p }}-->
-                <!--                            <button type="submit" class="btn btn-tweet">-->
-                <!--                                Комментировать-->
-                <!--                            </button>-->
-                <!--                        </form>-->
-                <!--                        {% endif %}-->
+                <div class="row">
+                    <div class="col-12 comment" v-if="showComments == node.id">
+                        <ul class="children">
+                            <div class="col-12" v-for="sub in node.subtweet">
+                                {{ sub.text }}
+                            </div>
+                        </ul>
+                    </div>
+                    <div class="col-12" v-if="auth && showComments == node.id">
+                            <textarea v-model="comment"
+                                      rows="2"
+                                      cols="80"
+                                      class="form-control">
+                            </textarea>
+                        <button @click="sendComment(node.id)" type="submit"
+                                class="btn btn-tweet">
+                            Комментировать
+                        </button>
+                    </div>
+                </div>
                 <!--                    </div>-->
                 <!--                </div>-->
             </div>
@@ -81,8 +81,12 @@
         mixins: [
             auth,
         ],
-        data: {
-            post: ''
+        data() {
+            return {
+                post: '',
+                comment: '',
+                showComments: false,
+            }
         },
         computed: {
             ...mapGetters([
@@ -135,6 +139,28 @@
                     }
                 })
             },
+            sendComment(id) {
+                $.ajax({
+                    url: this.$store.getters.get_url_server + "api/v1/app/my/",
+                    type: "POST",
+                    data: {
+                        id: id,
+                        text: this.comment,
+                    },
+                    success: (response) => {
+                        this.$emit("reload")
+                    },
+                    error: (response) => {
+                        console.log("False")
+                    }
+                })
+            },
+            openForm(id) {
+                this.showComments = id
+            },
+            closeForm() {
+                this.showComments = false
+            }
         },
         filters: {
             // Фильтр полной даты числами, приобразование даты
@@ -178,10 +204,6 @@
         /* box-shadow: 1px 1px 16px 1px #cecece; */
     }
 
-    .comment {
-        display: none;
-    }
-
     .btn-twit {
         border-radius: 100px;
         box-shadow: none;
@@ -202,3 +224,4 @@
         background: #00acd8;
     }
 </style>
+
