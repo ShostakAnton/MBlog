@@ -9,7 +9,7 @@
                 </button>
             </form>
         </div>
-        <div class="row twit" v-for="node in tweet">
+        <div class="row twit" v-for="node in tweet" v-if="node.parent == null">
             <div class="col-12"><p>{{ node.text }}</p></div>
             <div class="col-12"><b>
                 <small>
@@ -37,7 +37,7 @@
                    @click="openForm(node.id)">
                 </i>
                 <i class="fa fa-arrow-up"
-                   @click="closeForm(node.id)">
+                   @click="closeForm">
                 </i>
 
                 <div class="row">
@@ -60,10 +60,7 @@
                         </button>
                     </div>
                 </div>
-                <!--                    </div>-->
-                <!--                </div>-->
             </div>
-
         </div>
 
     </div>
